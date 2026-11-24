@@ -23,7 +23,7 @@ namespace xvl_ {
 using namespace std;
 using namespace xvl_;
 const int N = 1000005;
-template <size_t N> struct UnweightedGraph {
+template <size_t N> struct unweighted_graph {
     using iterator = typename vector <int> :: iterator;
     struct range {
         iterator l, r;
@@ -35,7 +35,7 @@ template <size_t N> struct UnweightedGraph {
     };
     int m = 0;
     vector <int> u, v, deg, G;
-    UnweightedGraph() : deg(N + 1) {  }
+    unweighted_graph() : deg(N + 1) {  }
     void add_edge(int x, int y) {
         u.emplace_back(x);
         v.emplace_back(y);
@@ -49,7 +49,7 @@ template <size_t N> struct UnweightedGraph {
     }
     range operator [] (int x) { return {G.begin() + deg[x], G.begin() + deg[x + 1]}; }
 };
-UnweightedGraph <N> G;
+unweighted_graph <N> G;
 int n, m;
 int main() {
     // freopen("InName.in", "r", stdin);
