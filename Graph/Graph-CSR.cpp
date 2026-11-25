@@ -23,7 +23,7 @@ namespace xvl_ {
 using namespace std;
 using namespace xvl_;
 const int N = 1000005;
-template <size_t N> struct graph {
+struct graph {
     using iterator = typename vector <pair <int, int>> :: iterator;
     struct range {
         iterator l, r;
@@ -33,10 +33,27 @@ template <size_t N> struct graph {
         bool empty() const { return l == r; }
         pair <int, int> &operator [] (int k) const { return l[k]; }
     };
-    int m = 0;
+    int n, m = 0;
     vector <int> u, v, w, deg;
     vector <pair <int, int>> G;
-    graph() : deg(N + 1) {  }
+    graph(int len = 0) : n(len), deg(len + 1) {  }
+    void clear() {
+        u.clear(), v.clear(), w.clear(), deg.clear(), G.clear();
+        n = m = 0;
+    }
+    void resize(int len) {
+        if (len == n) return ;
+        if (len < n) {
+            int tot = 0;
+            for (int i = 0; i < m; i++) {
+                if (u[i] >= len or v[i] >= len) continue;
+                u[tot] = u[i], v[tot] = v[i], w[tot] = w[i];
+                tot++;
+            }
+            m = tot, u.resize(m), v.resize(m), w.resize(m);
+        }
+        n = len, G.clear();
+    }
     void add_edge(int x, int y, int z = 0) {
         u.emplace_back(x);
         v.emplace_back(y);
@@ -44,21 +61,21 @@ template <size_t N> struct graph {
         m++;
     }
     void build() {
-        G.resize(m), deg.assign(N + 1, 0);
+        G.resize(m), deg.assign(n + 1, 0);
         for (int i = 0; i < m; i++) deg[u[i]]++;
-        for (int i = 0; i < N; i++) deg[i + 1] += deg[i];
+        for (int i = 0; i < n; i++) deg[i + 1] += deg[i];
         for (int i = m - 1; i >= 0; i--) G[--deg[u[i]]] = {v[i], w[i]};
     }
     range operator [] (int x) { return {G.begin() + deg[x], G.begin() + deg[x + 1]}; }
 };
-graph <N> G;
+graph G;
 int n, m;
 int main() {
     // freopen("InName.in", "r", stdin);
     // freopen("OutName.out", "w", stdout);
     ios :: sync_with_stdio(0);
     cin.tie(nullptr);
-    cin >> n >> m;
+    cin >> n >> m, G.resize(n + 1);
     for (int i = 1; i <= m; i++) { int u, v, w; cin >> u >> v >> w; G.add_edge(u, v, w); }
     G.build();
     for (int i = 1; i <= n; i++) {
